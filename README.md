@@ -77,6 +77,16 @@ cargo run get my_google_account
 
 The OTP is printed to standard output.
 
+### Other Commands
+
+```bash
+cargo run delete <ACCOUNT_NAME>
+```
+
+```bash
+cargo run list
+```
+
 ## Security Considerations
 
 *   This tool stores your sensitive 2FA secrets in your operating system's keychain. The security of these secrets relies on the security of your OS keychain and your user account.
