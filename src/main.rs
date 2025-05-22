@@ -13,13 +13,19 @@ struct Cli {
 #[derive(Subcommand, Debug)]
 enum Commands {
     Push(Push),
-    Get,
+    Get(Get),
 }
 
 
 #[derive(Args, Debug)]
 struct Push {
+    name: String,
     secret: String,
+}
+
+#[derive(Args, Debug)]
+struct Get {
+    name: String,
 }
 
 
@@ -30,11 +36,11 @@ async fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
     match args.command {
         Commands::Push(push) => {
-            let entry = Entry::new(SERVICE_NAME, "1")?;
+            let entry = Entry::new(SERVICE_NAME, &push.name)?;
             entry.set_password(&push.secret)?;
         }
-        Commands::Get => {
-            let entry = Entry::new(SERVICE_NAME, "1")?;
+        Commands::Get(get) => {
+            let entry = Entry::new(SERVICE_NAME, &get.name)?;
             let secret_base32 = entry.get_password()?;
 
             let topt = TOTP::new(

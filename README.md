@@ -5,6 +5,7 @@ A simple, secure command-line tool written in Rust for managing Time-based One-T
 ## Features
 
 *   **Secure Storage:** Stores your 2FA secrets in your operating system's native keychain (macOS Keychain, GNOME Keyring, KWallet, Windows Credential Manager) via the `keyring` crate. Secrets are not stored in plain text files.
+*   **Multi-Account Support:** Manage 2FA codes for different services (e.g., Google, GitHub, AWS) using unique account names.
 *   **OTP Generation:** Generates TOTP codes locally using the `totp-rs` crate.
 *   **Simple Interface:** Easy-to-use `push` (add/update) and `get` (generate) commands.
 *   **Cross-Platform:** Built with Rust, aiming for compatibility across macOS, Linux, and Windows (wherever a `keyring` backend is available).
@@ -18,55 +19,71 @@ A simple, secure command-line tool written in Rust for managing Time-based One-T
 
 ## Prerequisites
 
-*   **Rust Toolchain:**  Install Rust via [rustup](https://rustup.rs/).
+*   **Rust Toolchain:** Install Rust via [rustup](https://rustup.rs/).
 *   **OS Keychain Service:** Your operating system must have a functioning keychain or secret service.
     *   **macOS:** Keychain Access (built-in).
-    *   **Linux:** GNOME Keyring (libsecret), KWallet, or another service supported by the `secret-service-rs` crate. You might need to install packages like `libsecret-1-dev` or `gnome-keyring`.
+    *   **Linux:** GNOME Keyring (libsecret), KWallet, or another service supported by the `secret-service-rs` crate. You might need to install packages like `libsecret-1-dev` (Debian/Ubuntu) or `gnome-keyring` and ensure the daemon is running.
     *   **Windows:** Credential Manager (built-in).
 
 ## Installation
 
-### From Source (Recommended for now)
-
-Clone the repository:
-
+1.  Clone the repository:
+    ```bash
     git clone https://github.com/ahtremblay/cli-2fa.git
     cd cli-2fa
-
+    ```
+    You will run the tool from within this cloned directory using `cargo run `.
 
 ## Usage
 
-To store or update the 2FA secret (the Base32 string provided by the service, e.g., Google, Salesforce):
+The tool uses a fixed service name `rust.twofa-cli` to store all secrets in the OS keychain. Each 2FA secret is then uniquely identified by an **account name** you provide. All commands are run from the root of the cloned project directory.
 
-    cargo run push <YOUR_BASE32_SECRET_STRING>
+### Adding or Updating a 2FA Secret
 
-`cli-2fa` currently manages **one** 2FA secret at a time. This secret is associated with a default service name (`com.example.twofa-cli`) and account ID (`1`) in your OS keychain. Future versions aim to support multiple named accounts.
+To store or update the 2FA secret (the Base32 string provided by the service like Google, GitHub, etc.):
 
-To generate the current OTP for the stored secret:
+```bash
+cargo run push <ACCOUNT_NAME> <BASE32_SECRET_STRING>
+```
 
-    cargo run get
+*   `<ACCOUNT_NAME>`: A unique identifier you choose for this 2FA account. This allows you to store multiple 2FA secrets. For example: `google_personal`, `github_work`, `aws_console`.
+*   `<BASE32_SECRET_STRING>`: The secret key provided by the 2FA service provider.
 
-Example output:
+**Example:**
 
-    123456
+```bash
+cargo run push my_google_account JBSWY3DPEHPK3PXP # (Use your actual secret)
+cargo run push company_aws_account ONYXK234ONYXKABC
+```
+
+### Generating an OTP
+
+To generate the current OTP for a previously stored secret:
+
+```bash
+cargo run get <ACCOUNT_NAME>
+```
+
+*   `<ACCOUNT_NAME>`: The same unique identifier you used with the `push` command.
+
+**Example Output:**
+
+```bash
+cargo run get my_google_account
+```
+```
+123456
+```
 
 The OTP is printed to standard output.
 
 ## Security Considerations
 
 *   This tool stores your sensitive 2FA secrets in your operating system's keychain. The security of these secrets relies on the security of your OS keychain and your user account.
-*   The application itself does not transmit your secrets over the network.
+*   The application itself does not transmit your secrets over the network; all OTP generation is done locally.
 *   Ensure your computer is secured with a strong password, disk encryption, and up-to-date software.
 *   Be cautious if integrating this tool into automated scripts, as this could potentially expose OTPs if the script's environment or output is compromised.
 
-## Current Limitations & Future Enhancements
-
-`cli-2fa` is currently in its early stages. Here are some planned improvements:
-
-*   **[HIGH PRIORITY] Named Accounts:**
-    *   Allow managing multiple 2FA secrets for different services (e.g., `cli-2fa push google <secret>`, `cli-2fa get github`).
-    *   Commands like `add <account_name> <secret>`, `get <account_name>`, `list`, `delete <account_name>`.
-
 ## License
 
-This project is licensed under the Unlicense License
+This project is licensed under the Unlicense License.
