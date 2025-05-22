@@ -28,43 +28,27 @@ A simple, secure command-line tool written in Rust for managing Time-based One-T
 
 ### From Source (Recommended for now)
 
-1.  Clone the repository:
-    ```bash
+Clone the repository:
+
     git clone https://github.com/ahtremblay/cli-2fa.git
     cd cli-2fa
-    ```
-2.  Build the release binary:
-    ```bash
-    cargo build --release
-    ```
 
 
 ## Usage
 
-`cli-2fa` currently manages **one** 2FA secret at a time. This secret is associated with a default service name (`com.example.twofa-cli`) and account ID (`salesforce_default_user`) in your OS keychain. Future versions aim to support multiple named accounts.
-
-### Pushing (Adding/Updating) a Secret
-
 To store or update the 2FA secret (the Base32 string provided by the service, e.g., Google, Salesforce):
 
-```bash
-cli-2fa push YOUR_BASE32_SECRET_STRING
-```
+    cargo run push <YOUR_BASE32_SECRET_STRING>
 
-This will store `YOUR_BASE32_SECRET_STRING` securely in your OS keychain.
-
-### Getting (Generating) an OTP
+`cli-2fa` currently manages **one** 2FA secret at a time. This secret is associated with a default service name (`com.example.twofa-cli`) and account ID (`1`) in your OS keychain. Future versions aim to support multiple named accounts.
 
 To generate the current OTP for the stored secret:
 
-```bash
-cli-2fa get
-```
+    cargo run get
 
 Example output:
-```
-Generated OTP: 123456
-```
+
+    123456
 
 The OTP is printed to standard output.
 
