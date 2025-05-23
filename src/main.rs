@@ -21,7 +21,6 @@ enum Commands {
     List
 }
 
-
 #[derive(Args, Debug)]
 struct Push {
     name: String,
@@ -38,12 +37,9 @@ struct Delete {
     name: String,
 }
 
-
 const SERVICE_NAME: &str = "rust.twofa-cli";
 
-#[tokio::main]
-async fn main() -> anyhow::Result<()> {
-
+fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
     match args.command {
         Commands::Push(push) => {
@@ -64,7 +60,7 @@ async fn main() -> anyhow::Result<()> {
                     entry_index.set_password(&json)?;
                 }
                 Err(e) => {
-                    return Err(anyhow!(e));
+                    return Err(anyhow!(e))
                 }
             }
         }
