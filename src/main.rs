@@ -37,7 +37,8 @@ struct Delete {
     name: String,
 }
 
-const SERVICE_NAME: &str = "rust.twofa-cli";
+const SERVICE_NAME: &str = "rust.cli-2fa";
+const INDEX_NAME: &str = "index@rust.cli-2fa";
 
 fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
@@ -45,7 +46,7 @@ fn main() -> anyhow::Result<()> {
         Commands::Push(push) => {
             let entry = Entry::new(SERVICE_NAME, &push.name)?;
             entry.set_password(&push.secret)?;
-            let entry_index = Entry::new(SERVICE_NAME, "index@rust.twofa-cli")?;
+            let entry_index = Entry::new(SERVICE_NAME, INDEX_NAME)?;
             match entry_index.get_password() {
                 Ok(json) => {
                     let mut keys:BTreeSet<&str> = serde_json::from_str(&json)?;
@@ -80,7 +81,7 @@ fn main() -> anyhow::Result<()> {
         Commands::Delete(delete) => {
             let entry = Entry::new(SERVICE_NAME, &delete.name)?;
             entry.delete_credential()?;
-            let entry_index = Entry::new(SERVICE_NAME, "index@rust.twofa-cli")?;
+            let entry_index = Entry::new(SERVICE_NAME, INDEX_NAME)?;
             match entry_index.get_password() {
                 Ok(json) => {
                     let mut keys:BTreeSet<&str> = serde_json::from_str(&json)?;
@@ -96,7 +97,7 @@ fn main() -> anyhow::Result<()> {
             }
         }
         Commands::List => {
-            let entry_index = Entry::new(SERVICE_NAME, "index@rust.twofa-cli")?;
+            let entry_index = Entry::new(SERVICE_NAME, INDEX_NAME)?;
             match entry_index.get_password() {
                 Ok(json) => {
                     let keys:BTreeSet<&str> = serde_json::from_str(&json)?;
