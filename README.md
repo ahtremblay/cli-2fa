@@ -15,7 +15,6 @@ A simple, secure command-line tool written in Rust for managing Time-based One-T
 *   **Convenience:** Quickly grab 2FA codes from the terminal, especially useful for developers and CLI power users.
 *   **Scriptability:** Can be integrated into scripts for automated logins (use with caution and understand security implications).
 *   **Security-conscious:** Leverages the OS keychain for secret storage, which is generally more secure than custom encryption or plain text.
-*   **Learn Rust:** This project also serves as a practical example of building a CLI tool in Rust.
 
 ## Prerequisites
 
