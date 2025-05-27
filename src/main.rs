@@ -15,14 +15,14 @@ struct Cli {
 
 #[derive(Subcommand, Debug)]
 enum Commands {
-    Push(Push),
+    Add(Add),
     Get(Get),
     Delete(Delete),
     List
 }
 
 #[derive(Args, Debug)]
-struct Push {
+struct Add {
     name: String,
     secret: String,
 }
@@ -43,7 +43,7 @@ const INDEX_NAME: &str = "index@rust.cli-2fa";
 fn main() -> anyhow::Result<()> {
     let args = Cli::parse();
     match args.command {
-        Commands::Push(push) => {
+        Commands::Add(push) => {
             let entry = Entry::new(SERVICE_NAME, &push.name)?;
             entry.set_password(&push.secret)?;
             let entry_index = Entry::new(SERVICE_NAME, INDEX_NAME)?;
